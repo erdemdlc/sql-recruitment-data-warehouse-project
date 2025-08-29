@@ -6,9 +6,9 @@ This document outlines the naming conventions used for schemas, tables, views, c
 
 1. [General Principles](#general-principles)
 2. [Table Naming Conventions](#table-naming-conventions)
-   - [ODS Rules](#bronze-rules)
-   - [DWH Rules](#silver-rules)
-   - [DM Rules](#gold-rules)
+   - [ODS Rules](#ODS-rules)
+   - [DWH Rules](#DWH-rules)
+   - [DM Rules](#DM-rules)
 3. [Column Naming Conventions](#column-naming-conventions)
    - [Surrogate Keys](#surrogate-keys)
    - [Technical Columns](#technical-columns)
@@ -41,18 +41,18 @@ This document outlines the naming conventions used for schemas, tables, views, c
 - All names must use meaningful, business-aligned names for tables, starting with the category prefix.
 - **`<category>_<entity>`**  
   - `<category>`: Describes the role of the table, such as `dim` (dimension) or `fact` (fact table).  
-  - `<entity>`: Descriptive name of the table, aligned with the business domain (e.g., `customers`, `products`, `sales`).  
+  - `<entity>`: Descriptive name of the table, aligned with the business domain (e.g., `candidates`, `recruiters`, `customers`).  
   - Examples:
     - `dim_customers` → Dimension table for customer data.  
-    - `fact_sales` → Fact table containing sales transactions.  
+    - `fact_interviews` → Fact table containing interview transactions.  
 
 #### **Glossary of Category Patterns**
 
 | Pattern     | Meaning                           | Example(s)                              |
 |-------------|-----------------------------------|-----------------------------------------|
-| `dim_`      | Dimension table                  | `dim_customer`, `dim_product`           |
-| `fact_`     | Fact table                       | `fact_sales`                            |
-| `report_`   | Report table                     | `report_customers`, `report_sales_monthly`   |
+| `dim_`      | Dimension table                  | `dim_customers`, `dim_recruiters`           |
+| `fact_`     | Fact table                       | `fact_interviews`                            |
+| `report_`   | Report table                     | `report_customers`, `report_hires_monthly`   |
 
 ## **Column Naming Conventions**
 
@@ -75,7 +75,6 @@ This document outlines the naming conventions used for schemas, tables, views, c
 - All stored procedures used for loading data must follow the naming pattern:
 - **`load_<layer>`**.
   
-  - `<layer>`: Represents the layer being loaded, such as `bronze`, `silver`, or `gold`.
+  - `<layer>`: Represents the layer being loaded, such as `ods`, `dwh`, or `dm`.
   - Example: 
-    - `load_bronze` → Stored procedure for loading data into the Bronze layer.
-    - `load_silver` → Stored procedure for loading data into the Silver layer.
+    - `load_dwh` → Stored procedure for loading data into the Bronze layer.

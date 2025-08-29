@@ -33,7 +33,7 @@ This document outlines the naming conventions used for schemas, tables, views, c
 ### **DWH Rules**
 - All names must standardized,cleaned and table names must renamed as their English equivalent.
 - **`<sourcesystem>_<entity>`**  
-  - `<sourcesystem>`: Abbreviated name of the source system (e.g., `ct`, `ct`,`pt`).  
+  - `<sourcesystem>`: Abbreviated name of the source system (e.g., `ct`, `at`,`pt`).  
   - `<entity>`: Cleaned, standardized table name from the source system.  
   - Example: `ct_candidate_submission` → Information about candidates shared with customers.
 

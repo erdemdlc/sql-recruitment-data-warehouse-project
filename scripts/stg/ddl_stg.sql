@@ -27,24 +27,24 @@ GO
 
 ALTER TABLE [stg].[at_teklif] ADD  DEFAULT (getdate()) FOR [dwh_create_date]
 GO
-CREATE TABLE stg.at_aday_rapor (
-submission_date DATE
-,candidate_full_name NVARCHAR(50)
-,title NVARCHAR(50)
-,customer NVARCHAR(50)
-,experience FLOAT
-,net_salary FLOAT
-,[location] NVARCHAR(50)
-,english_level NVARCHAR(50)
-,recruiter NVARCHAR(50)
-,[source] NVARCHAR(50)
-,interview_method NVARCHAR(50)
-,elimination_reason NVARCHAR(50)
-,offer_reject_reason NVARCHAR(50)
-,linkedin_url NVARCHAR(50)
-,[dwh_create_date] [datetime2](7) 
-) 
+CREATE TABLE [stg].[at_aday_rapor](
+	[submission_date] [date] NULL,
+	[candidate_full_name] [nvarchar](250) NULL,
+	[title] [nvarchar](250) NULL,
+	[customer] [nvarchar](250) NULL,
+	[experience] [float] NULL,
+	[net_salary] [float] NULL,
+	[location] [nvarchar](250) NULL,
+	[english_level] [nvarchar](250) NULL,
+	[recruiter] [nvarchar](250) NULL,
+	[source] [nvarchar](250) NULL,
+	[interview_method] [nvarchar](250) NULL,
+	[elimination_reason] [nvarchar](250) NULL,
+	[offer_reject_reason] [nvarchar](250) NULL,
+	[linkedin_url] [nvarchar](500) NULL,
+	[dwh_create_date] [datetime2](7) NULL
+) ON [PRIMARY]
 GO
 
-ALTER TABLE stg.at_aday_rapor ADD  DEFAULT (getdate()) FOR [dwh_create_date]
+ALTER TABLE [stg].[at_aday_rapor] ADD  DEFAULT (getdate()) FOR [dwh_create_date]
 GO

@@ -48,3 +48,25 @@ GO
 
 ALTER TABLE [stg].[at_aday_rapor] ADD  DEFAULT (getdate()) FOR [dwh_create_date]
 GO
+CREATE TABLE [stg].[et_aday_raporu](
+	[submission_date] [date] NULL,
+	[candidate_full_name] [nvarchar](250) NULL,
+	[title] [nvarchar](250) NULL,
+	[customer] [nvarchar](250) NULL,
+	[experience] [float] NULL,
+	[net_salary] [float] NULL,
+	[location] [nvarchar](250) NULL,
+	[english_level] [nvarchar](250) NULL,
+	[recruiter] [nvarchar](250) NULL,
+	[source] [nvarchar](250) NULL,
+	[interview_method] [nvarchar](250) NULL,
+	[elimination_reason] [nvarchar](250) NULL,
+	[offer_reject_reason] [nvarchar](250) NULL,
+	[linkedin_url] [nvarchar](500) NULL,
+	[dwh_create_date] [datetime2](7) NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [stg].[et_aday_raporu] ADD  DEFAULT (getdate()) FOR [dwh_create_date]
+GO
+

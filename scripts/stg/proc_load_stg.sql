@@ -1340,4 +1340,56 @@ END AS interview_method
 	ELSE 'n/a'
 END AS linkedin_url
   FROM [TechnoHR].[ods].[et_aday_raporu]
+GO
+TRUNCATE TABLE stg.application_history
+INSERT INTO stg.application_history (
+	   [application_date]
+      ,[candidate_full_name]
+      ,[recruiter]
+      ,[customer]
+      ,[location]
+      ,[title]
+	)
+SELECT 
+    TRY_CONVERT(DATE,[tarih],103) AS application_date     
+    ,UPPER(ad_soyad) AS candidate_full_name
+    ,hr AS recruiter
+    ,CASE
+        WHEN musteri LIKE '%Genel%' THEN 'n/a'
+        WHEN musteri LIKE 'Logo%' THEN 'Logo Yazılım'
+        WHEN musteri LIKE 'Vava%' THEN 'VavaCars'
+        WHEN musteri LIKE 'Mobillium%' THEN 'Mobillium'
+        WHEN musteri LIKE 'PİA%' THEN 'PiA'
+        ELSE musteri
+    END AS customer
+    ,lokasyon AS [location]
+    ,CASE
+	    WHEN pozisyon LIKE '%Scrum%' OR pozisyon LIKE '%Agile%' THEN 'Agile/Scrum Master'
+	    WHEN pozisyon LIKE '%Kanban%'  THEN 'Kanban Master'
+	    ELSE pozisyon
+    END AS title
+FROM [TechnoHR].[ods].[et_agilescrumkanban]
+UNION ALL
+SELECT 
+    TRY_CONVERT(DATE,[tarih],103) AS application_date    
+    ,UPPER(ad_soyad) AS candidate_full_name
+    ,hr AS recruiter
+    ,[musteri] AS customer
+    ,[lokasyon] AS [location]
+    ,'Artificial Intelligence Director' AS title
+ FROM [TechnoHR].[ods].[et_ai]
+UNION ALL
+SELECT 
+    TRY_CONVERT(DATE,[tarih],103) AS application_date    
+    ,UPPER(ad_soyad) AS candidate_full_name
+    ,hr AS recruiter          
+    ,[musteri] AS customer
+    ,NULL AS [location]
+    ,CASE
+         WHEN lokasyon = 'Lead API Architect-Ereteam' OR  lokasyon IS NULL THEN 'API Management Specialist'
+         WHEN lokasyon = 'Software Architect-Java' THEN 'Software Architect'
+     END AS title
+  FROM [TechnoHR].[ods].[et_api_management]
+
+
 

@@ -66,7 +66,20 @@ CREATE TABLE [stg].[et_aday_raporu](
 	[dwh_create_date] [datetime2](7) NULL
 ) ON [PRIMARY]
 GO
-
 ALTER TABLE [stg].[et_aday_raporu] ADD  DEFAULT (getdate()) FOR [dwh_create_date]
 GO
 
+CREATE TABLE stg.application_history 
+(
+ application_date	DATE
+,candidate_full_name NVARCHAR(250)
+,recruiter NVARCHAR(250)
+,customer NVARCHAR(250)
+,candidate_current_company NVARCHAR(250)
+,[location] NVARCHAR(250)
+,title NVARCHAR(250)
+,dwh_create_date DATETIME2(7)
+)
+GO
+ALTER TABLE stg.application_history ADD  DEFAULT (getdate()) FOR [dwh_create_date]
+GO

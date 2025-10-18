@@ -75,7 +75,6 @@ CREATE TABLE stg.application_history
 ,candidate_full_name NVARCHAR(250)
 ,recruiter NVARCHAR(250)
 ,customer NVARCHAR(250)
-,candidate_current_company NVARCHAR(250)
 ,[location] NVARCHAR(250)
 ,title NVARCHAR(250)
 ,dwh_create_date DATETIME2(7)

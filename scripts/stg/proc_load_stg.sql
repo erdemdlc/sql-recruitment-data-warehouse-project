@@ -371,6 +371,9 @@ TRY_CONVERT(DATE,[tarih],103) AS submission_date
 	WHEN TRIM(pozisyon) LIKE '%SAP%' AND TRIM(pozisyon) LIKE '%PM%' THEN 'SAP PM Consultant'
 	WHEN TRIM(pozisyon) LIKE '%SAP%' AND TRIM(pozisyon) LIKE '%PP%' THEN 'SAP PP Consultant'
 	WHEN TRIM(pozisyon) LIKE '%SAP%' AND TRIM(pozisyon) LIKE '%SD%MM%' THEN 'SAP SD/MM Consultant'
+	WHEN TRIM(pozisyon) LIKE '%SAP%' AND TRIM(pozisyon) LIKE '%SD%' THEN 'SAP SD Consultant'
+	WHEN TRIM(pozisyon) LIKE '%SAP%' AND TRIM(pozisyon) LIKE '%Basis%' THEN 'SAP Basis Consultant'
+	WHEN TRIM(pozisyon) LIKE '%SAP%' AND TRIM(pozisyon) LIKE '%BO%' THEN 'SAP BO Consultant'
 	WHEN TRIM(pozisyon) = 'PM Danışmanı' THEN 'SAP PM Consultant'
 	WHEN TRIM(pozisyon) LIKE '%ABAP%' THEN 'SAP ABAP Consultant'
 	WHEN TRIM(pozisyon) LIKE '%BW/4HANA%' THEN 'SAP BW/4HANA Consultant'
@@ -737,7 +740,7 @@ END AS experience
 	ELSE TRY_CAST(TRIM(net_ucret) AS FLOAT)
 
 END AS net_salary
- ,CASE 
+      ,CASE 
 	WHEN TRIM([adayin_lokasyonu_il_ilce]) LIKE '%İst.%'
 	THEN REPLACE(TRIM([adayin_lokasyonu_il_ilce]),'İst.','İstanbul')
 	ELSE TRIM([adayin_lokasyonu_il_ilce])

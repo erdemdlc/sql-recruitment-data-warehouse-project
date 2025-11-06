@@ -1350,23 +1350,29 @@ INSERT INTO stg.application_history (
       ,[candidate_full_name]
       ,[recruiter]
       ,[customer]
-      ,[location]
       ,[title]
 	)
 SELECT 
     TRY_CONVERT(DATE,[tarih],103) AS application_date     
     ,UPPER(ad_soyad) AS candidate_full_name
-    ,hr AS recruiter
     ,CASE
-        WHEN musteri LIKE '%Genel%' THEN 'n/a'
+	WHEN hr = 'Gizem' THEN 'Gizem Afacan'
+	WHEN hr = 'Elif' THEN 'Elif Day'
+	WHEN hr LIKE 'Tuna%' THEN 'Tunahan'
+	WHEN hr = 'özge' OR hr = 'öZGE'  THEN 'Özge'
+	WHEN hr = 'sibel'  THEN 'Sibel'
+	ELSE hr
+	END AS recruiter
+    ,CASE
+        WHEN musteri IS NULL OR musteri LIKE '%Genel%' THEN 'n/a'
         WHEN musteri LIKE 'Logo%' THEN 'Logo Yazılım'
         WHEN musteri LIKE 'Vava%' THEN 'VavaCars'
         WHEN musteri LIKE 'Mobillium%' THEN 'Mobillium'
-        WHEN musteri LIKE 'PİA%' THEN 'PiA'
+        WHEN musteri LIKE 'P[iıIİ][aA]%' THEN 'PiA'
         ELSE musteri
     END AS customer
-    ,lokasyon AS [location]
     ,CASE
+	    WHEN pozisyon IS NULL THEN 'n/a'
 	    WHEN pozisyon LIKE '%Scrum%' OR pozisyon LIKE '%Agile%' THEN 'Agile/Scrum Master'
 	    WHEN pozisyon LIKE '%Kanban%'  THEN 'Kanban Master'
 	    ELSE pozisyon
@@ -1376,10 +1382,12 @@ UNION ALL
 SELECT 
     TRY_CONVERT(DATE,[tarih],103) AS application_date    
     ,UPPER(ad_soyad) AS candidate_full_name
-    ,hr AS recruiter
-    ,[musteri] AS customer
-    ,[lokasyon] AS [location]
-    ,'Artificial Intelligence Director' AS title
+    ,CASE 
+	WHEN hr = 'özge' OR hr = 'öZGE' THEN 'Özge'
+	ELSE hr
+	END AS recruiter
+    ,[musteri] AS customer   
+	,'Artificial Intelligence Director' AS title
  FROM [TechnoHR].[ods].[et_ai]
 UNION ALL
 SELECT 
@@ -1387,7 +1395,6 @@ SELECT
     ,UPPER(ad_soyad) AS candidate_full_name
     ,hr AS recruiter          
     ,[musteri] AS customer
-     ,ISNULL(lokasyon, 'n/a') AS [location]
     ,CASE
          WHEN lokasyon = 'Lead API Architect-Ereteam' OR  lokasyon IS NULL THEN 'API Management Specialist'
          WHEN lokasyon = 'Software Architect-Java' THEN 'Software Architect'
@@ -1397,9 +1404,11 @@ UNION ALL
 SELECT  
     TRY_CONVERT(DATE,[tarih],103) AS application_date    
     ,UPPER(ad_soyad) AS candidate_full_name
-    ,hr AS recruiter
+    ,CASE
+	WHEN hr = 'Elif' THEN 'Elif Day'
+	ELSE hr
+	END AS recruiter
     ,[musteri] AS customer
-    ,[lokasyon] AS [location]
     ,'Software Developer' AS title
 FROM [TechnoHR].[ods].[et_application_dev]
 UNION ALL
@@ -1420,13 +1429,12 @@ SELECT
 	     WHEN musteri LIKE '%Etiya%' THEN 'Etiya'
 	     WHEN musteri LIKE '%Fimple%' THEN 'Fimple'
 	     WHEN musteri LIKE '%Optiim%' THEN 'Optiim'
-	     WHEN musteri LIKE '%PİA%' THEN 'PiA'
+	     WHEN musteri LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 	     WHEN musteri = 'Enerjisa' THEN 'EnerjiSA'
 	     WHEN musteri = 'ıd3' THEN 'ID3'
-	     WHEN musteri = 'Genel' OR musteri = 'Software Architect' THEN 'n/a'
+	     WHEN musteri IS NULL OR musteri = 'Genel' OR musteri = 'Software Architect' THEN 'n/a'
 	     ELSE musteri
      END AS customer
-     ,ISNULL(lokasyon, 'n/a') AS [location]
     ,CASE
          WHEN lokasyon LIKE '%Software%'
            OR musteri LIKE '%Software%' THEN 'Software Architect'
@@ -1449,7 +1457,6 @@ SELECT
 		 WHEN musteri LIKE '%Gantek%' THEN 'Gantek'
 		 ELSE musteri
 	 END AS customer
-	,[lokasyon] AS [location]
 	,'Asset & Configuration Manager' AS title
 FROM [TechnoHR].[ods].[et_asset_ve_konfigurasyon]
 UNION ALL
@@ -1458,16 +1465,15 @@ SELECT
     ,UPPER(ad_soyad) AS candidate_full_name
 	,CASE 
 		 WHEN hr ='Gizem' THEN 'Gizem Afacan'
+		 WHEN hr ='sibel' THEN 'Sibel'
+
 		 ELSE hr
 	 END AS recruiter
 	,CASE 
+		 WHEN musteri IS NULL THEN 'n/a'
 		 WHEN musteri ='Enerjisa-Eşarj' THEN 'Eşarj'
 		 ELSE musteri
 	 END AS customer
-	,CASE 
-		 WHEN lokasyon ='-' OR lokasyon IS NULL THEN 'n/a'
-		 ELSE lokasyon
-	 END AS [location]	
 	 ,CASE 
 		 WHEN pozisyon ='AWS Network Architect & Admin' THEN 'System & Network Team Lead'
 		 ELSE 'n/a' 
@@ -1478,11 +1484,26 @@ SELECT
 	TRY_CONVERT(DATE,[tarih],103) AS application_date    
     ,UPPER(TRIM(ad_soyad)) AS candidate_full_name
 	,CASE 
-		 WHEN TRIM(hr) ='?' THEN 'n/a'
-		 WHEN TRIM(hr) LIKE 'Şevval%' THEN 'Şevval'
+		 WHEN TRIM(hr) = '?' OR TRIM(hr) = 'Gidilmesin' THEN 'n/a'
+		 WHEN TRIM(hr) = 'ege' THEN 'Ege'
+		 WHEN TRIM(hr) = 'Elif' THEN 'Elif Day'
+		 WHEN TRIM(hr) = 'AKIN' THEN 'Akın'
+		 WHEN TRIM(hr) = 'Deniz K.' THEN 'Deniz Karsel'
+		 WHEN TRIM(hr) = 'ECE' THEN 'Ece'
+		 WHEN TRIM(hr) = 'selin' THEN 'Selin'
+		 WHEN TRIM(hr) LIKE 'Şevval%' THEN 'Şevval Nur'
+		 WHEN TRIM(hr) LIKE 'Hayra%' THEN 'Hayra'
 		 WHEN TRIM(hr) LIKE 'Tanay%' THEN 'Özge Tanay'
+		 WHEN TRIM(hr) LIKE 'Yasemin H%' THEN 'Yasemin Hepyaşar'
+		 WHEN TRIM(hr) = 'HATİCE Ş.' THEN 'Hatice'
+		 WHEN TRIM(hr) = 'Sbel' OR TRIM(hr) = 'sibel' OR TRIM(hr) LIKE 'Sibel%' THEN 'Sibel'
+		 WHEN TRIM(hr) = 'MK' THEN 'Meral'
+		 WHEN TRIM(hr) = 'Tuğba Nur' THEN 'Tuğba'
+		 WHEN hr = 'EMRE' THEN 'Emre'
+		 WHEN TRIM(hr) = 'özge' THEN 'Özge'
 		 WHEN TRIM(hr) ='Gizem' THEN 'Gizem Afacan'
-		 ELSE TRIM(hr)
+		 WHEN TRIM(hr) LIKE 'Zeynep%' THEN 'Zeynep'
+	ELSE TRIM(hr)
 	 END AS recruiter	
 	 ,CASE 
 		 WHEN TRIM(musteri_pozisyon) LIKE '%loj_k%' 
@@ -1511,16 +1532,12 @@ SELECT
 		 WHEN TRIM(musteri_pozisyon) LIKE 'Metric%' THEN 'Metric Yazılım'
 		 WHEN TRIM(musteri_pozisyon) LIKE 'Neowise%' THEN 'Neowise'
 		 WHEN TRIM(musteri_pozisyon) LIKE 'Opti%' THEN 'Optiim'
-		 WHEN TRIM(musteri_pozisyon) LIKE 'Pia%' THEN 'PiA'		 
-		 WHEN TRIM(musteri_pozisyon) LIKE 'Sanko%' THEN 'SANKO'
+		 WHEN TRIM(musteri_pozisyon) LIKE 'P[iıIİ][aA]%' THEN 'PiA'		 
+		 WHEN TRIM(musteri_pozisyon) LIKE 'Sanko%' THEN 'SANKO Holding'
 		 WHEN TRIM(musteri_pozisyon) LIKE 'Tatil%' THEN 'TatilBudur'
 		 WHEN TRIM(musteri_pozisyon) LIKE 'TAV%' THEN 'TAV Technologies'
 		 ELSE TRIM(musteri_pozisyon)
-	 END AS customer
-	,CASE 
-		 WHEN lokasyon NOT LIKE '%[a-zA-Z]%' THEN 'n/a'
-		 ELSE lokasyon
-	 END AS [location]  
+	 END AS customer 
 	 ,'BI/DWH Consultant' AS title
 FROM [TechnoHR].[ods].[et_bietl]
 UNION ALL
@@ -1529,25 +1546,23 @@ SELECT
     ,UPPER(aday_ad_soyad) AS candidate_full_name
     ,CASE
         WHEN hr = 'Gizem' THEN 'Gizem Afacan'
+        WHEN hr = 'AKIN' THEN 'Akın'
         WHEN hr = 'Elif' THEN 'Elif Day'
         WHEN hr = 'Tuna' THEN 'Tunahan'
         WHEN hr = 'Sbel' THEN 'Sibel'
         WHEN hr = 'Tuğba Nur' THEN 'Tuğba'
+        WHEN hr = 'özge' THEN 'Özge'
         ELSE hr
     END AS recruiter
     ,CASE
-        WHEN musteri LIKE '%Genel%' THEN 'n/a'
+        WHEN musteri IS NULL OR musteri LIKE '%Genel%' THEN 'n/a'
         WHEN musteri LIKE 'Databoss%' THEN 'DataBoss'
         WHEN musteri LIKE 'Eye%' THEN 'EYE Teknoloji'
         WHEN musteri LIKE 'Gantek%' THEN 'Gantek'
         WHEN musteri LIKE 'Mobiliz%' THEN 'Mobiliz'
         WHEN musteri LIKE 'Vava%' THEN 'VavaCars'
         ELSE musteri
-    END AS customer
-	,CASE 
-		 WHEN lokasyon NOT LIKE '%[a-zA-Z]%' THEN 'n/a'
-		 ELSE lokasyon
-	 END AS [location]      
+    END AS customer     
      ,'Big Data Engineer' AS title
 FROM [TechnoHR].[ods].[et_big_data]
 UNION ALL
@@ -1558,12 +1573,14 @@ SELECT
         WHEN hr = 'Deniz K.' THEN 'Deniz Karsel'
         WHEN hr = 'Elif' THEN 'Elif Day'
         WHEN hr = 'gizem' THEN 'Gizem Afacan'
+        WHEN hr LIKE 'Tuğba%' THEN 'Tuğba'
+        WHEN hr = 'yasemin' THEN 'Yasemin'
+        WHEN hr = 'özlem' THEN 'Özlem'
         ELSE hr
     END AS recruiter
     ,CASE
         WHEN musteri LIKE 'netaş%' THEN 'NETAŞ'
     END AS customer
-    ,COALESCE(lokasyon,'n/a') AS [location]
 	,'Java Developer' AS title
 FROM [TechnoHR].[ods].[et_bugfix]
 UNION ALL
@@ -1574,7 +1591,6 @@ SELECT
         WHEN hr = 'TUNA' THEN 'Tunahan'
     END AS recruiter    
     ,'NETAŞ' AS customer
-    ,COALESCE(lokasyon,'n/a') AS [location]
     ,'Mainframe Developer' AS title
 FROM [TechnoHR].[ods].[et_cobol]
 UNION ALL
@@ -1593,7 +1609,6 @@ SELECT
         WHEN musteri LIKE 'Odeon%' THEN 'Odeon'
         WHEN musteri LIKE 'Ta%' THEN 'TatilBudur'
     END AS customer
-    ,COALESCE(lokasyon,'n/a') AS [location]
 	,'CRM Specialist' AS title
 FROM [TechnoHR].[ods].[et_crm]
 UNION ALL
@@ -1611,7 +1626,6 @@ SELECT
 	    WHEN musteri = 'EVAM' THEN 'Evam'
 	    ELSE musteri
      END AS customer    
-    ,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE
 		WHEN musteri = 'Fimple' THEN 'Customer Success Manager'
 		WHEN pozisyon LIKE '%Application Support Engineer' THEN 'Application Support Engineer'
@@ -1622,13 +1636,14 @@ FROM [TechnoHR].[ods].[et_customer_success]
 UNION ALL
 SELECT 
      TRY_CONVERT(DATE,[tarih],103) AS application_date            
-    ,UPPER(ad_soyad) AS candidate_full_name
+    ,COALESCE(UPPER(ad_soyad),'n/a') AS candidate_full_name
     ,CASE
 	    WHEN hr = 'AKIN' THEN 'Akın'
 	    WHEN hr LIKE  'Buse%' THEN 'Buse'
 	    WHEN hr = 'Elif' THEN 'Elif Day'
 	    WHEN hr = 'Gizem' THEN 'Gizem Afacan'
 	    WHEN hr = 'Gizem D.' THEN 'Gizem Dilara'
+	    WHEN hr = 'özge' THEN 'Özge'
 	    WHEN hr IS NULL THEN 'n/a'
 	    ELSE hr
      END AS recruiter      
@@ -1640,7 +1655,6 @@ SELECT
 	    WHEN musteri LIKE 'Optiim%' THEN 'Optiim'
 	    ELSE musteri
      END AS customer          
-    ,COALESCE(lokasyon,'n/a') AS [location]
     ,'Data Scientist' AS title
 FROM [TechnoHR].[ods].[et_data_scientist]
 UNION ALL
@@ -1648,6 +1662,7 @@ SELECT
      TRY_CONVERT(DATE,[tarih],103) AS application_date            
     ,UPPER(TRIM(ad_soyad)) AS candidate_full_name      
 ,CASE
+	WHEN TRIM(hr) = 'AKIN' THEN 'Akın'
 	WHEN TRIM(hr) LIKE 'Asena%' THEN 'Asena'
 	WHEN TRIM(hr) = 'Deniz K.' THEN 'Deniz Karsel'
 	WHEN TRIM(hr) LIKE 'Deniz%' THEN 'Deniz'
@@ -1657,7 +1672,7 @@ SELECT
 	WHEN TRIM(hr) LIKE 'Hilal%' THEN 'Hilal'
 	WHEN TRIM(hr) LIKE 'Meral%' OR TRIM(hr) = 'MK' THEN 'Meral'
 	WHEN TRIM(hr) LIKE 'Onur%' THEN 'Onur'
-	WHEN TRIM(hr) = 'Sbel' THEN 'Sibel'
+	WHEN TRIM(hr) = 'Sbel' OR TRIM(hr) = 'Siibel' THEN 'Sibel'
 	WHEN TRIM(hr) LIKE 'Sema%' THEN 'Semanur'
 	WHEN TRIM(hr) LIKE 'Sibel%' THEN 'Sibel'
 	WHEN TRIM(hr) LIKE 'Şevval%' THEN 'Şevval Nur'
@@ -1665,6 +1680,7 @@ SELECT
 	WHEN TRIM(hr) = 'TUNA' THEN 'Tunahan'
 	WHEN TRIM(hr) = 'yasemin' THEN 'Yasemin'
 	WHEN TRIM(hr) LIKE 'Yasemin%' THEN 'Yasemin Hepyaşar'
+	WHEN TRIM(hr) = 'ÖZGE' THEN 'Özge'
 	ELSE TRIM(hr)
  END AS recruiter      
 ,CASE
@@ -1672,16 +1688,12 @@ SELECT
 	    WHEN musteri IS NULL OR musteri = 'Genel' THEN 'n/a'
 	    ELSE musteri
      END AS customer      
-	,CASE 
-		 WHEN lokasyon NOT LIKE '%[a-zA-Z]%' THEN 'n/a'
-		 ELSE lokasyon
-	 END AS [location]
 	 ,'DBA' AS title
 FROM [TechnoHR].[ods].[et_dba]
 UNION ALL
 SELECT 
      TRY_CONVERT(DATE,[tarih],103) AS application_date            
-    ,UPPER(ad_soyad) AS candidate_full_name        
+    ,COALESCE(UPPER(ad_soyad),'n/a') AS candidate_full_name        
 ,CASE
 	 WHEN hr IS NULL OR hr = 'Genel' THEN 'n/a'
 	 WHEN hr = 'AKIN' THEN 'Akın'
@@ -1704,6 +1716,8 @@ SELECT
 	 WHEN hr = 'TUNA' THEN 'Tunahan'
 	 WHEN hr = 'Yasemin H.' THEN 'Yasemin Hepyaşar'
 	 WHEN hr = 'Zeynep Oktay' THEN 'Zeynep'
+	 WHEN hr = 'özge' THEN 'Özge'
+	 WHEN hr = 'selin' THEN 'Selin'
 	 ELSE hr
  END AS recruiter      
 ,CASE
@@ -1713,6 +1727,7 @@ SELECT
 		OR TRIM(musteri) = 'Referans' THEN 'n/a'
 	WHEN TRIM(musteri) = 'buinsoft' THEN 'Buinsoft'
 	WHEN TRIM(musteri) LIKE 'Creentech%' THEN 'Creentech'
+	WHEN TRIM(musteri) LIKE 'Codexist%' THEN 'Codexist Bilişim'
 	WHEN TRIM(musteri) LIKE 'Data%' THEN 'DataBoss'
 	WHEN TRIM(musteri) LIKE 'Etiya%' THEN 'Etiya'
 	WHEN TRIM(musteri) LIKE 'Gante%' THEN 'Gantek'
@@ -1725,7 +1740,7 @@ SELECT
 	WHEN TRIM(musteri) LIKE 'Kafein%' THEN 'Kafein'
 	WHEN TRIM(musteri) LIKE 'Logo%' THEN 'Logo Yazılım'
 	WHEN TRIM(musteri) LIKE 'Optiim%' THEN 'Optiim'
-	WHEN TRIM(musteri) LIKE 'P[iİıI]A%' THEN 'PiA'
+	WHEN TRIM(musteri) LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 	WHEN TRIM(musteri) LIKE 'Snap%' 
 		OR TRIM(musteri) = 'Snaypbytes'  THEN 'Snapbytes'
 	WHEN TRIM(musteri) LIKE 'Tatil%' THEN 'TatilBudur'
@@ -1734,7 +1749,6 @@ SELECT
 	WHEN TRIM(musteri) LIKE 'VavaCars%' THEN 'VavaCars'
 	ELSE TRIM(musteri)
      END AS customer       
-     ,[lokasyon] AS [location]
      ,'DevOps Engineer' AS title
 FROM [TechnoHR].[ods].[et_devops]
 UNION ALL
@@ -1750,7 +1764,6 @@ SELECT
 	     WHEN musteri LIKE '%ASİS%' THEN 'Asis Otomasyon'
 	     ELSE musteri
      END AS customer 
-    ,COALESCE(lokasyon,'n/a') AS [location]
     ,'Hardware Design Engineer' AS title
 FROM [TechnoHR].[ods].[et_donanim_tasarim]
 UNION ALL
@@ -1766,7 +1779,6 @@ SELECT
 	     WHEN musteri LIKE '%MDS%' THEN 'MDS ap Tech'
 	     ELSE musteri
      END AS customer 
-    ,COALESCE(lokasyon,'n/a') AS [location]
      ,'Financial Risk Advisory' AS title
 FROM [TechnoHR].[ods].[et_finansal_risk_yonetimi]
 UNION ALL
@@ -1780,7 +1792,6 @@ TRY_CONVERT(DATE,[tarih],103) AS application_date
 	     ELSE hr
 END AS recruiter    
     ,'Ereteam' AS customer    
-    ,COALESCE(lokasyon,'n/a') AS [location]
     ,'TM1 Consultant' AS title
 FROM [TechnoHR].[ods].[et_fpmtm1consultant]
 UNION ALL
@@ -1798,10 +1809,13 @@ SELECT
 	WHEN TRIM(hr) LIKE 'Sibel%' THEN 'Sibel'
 	WHEN TRIM(hr) = 'Tanay' THEN 'Özge Tanay'
 	WHEN TRIM(hr) = 'Tuğba Nur' THEN 'Tuğba'
+	WHEN TRIM(hr) = 'selin' THEN 'Selin'
 	WHEN TRIM(hr) = 'TUNA' THEN 'Tunahan'
 	WHEN TRIM(hr) LIKE 'Yasemin H%' THEN 'Yasemin Hepyaşar'
 	WHEN TRIM(hr) LIKE 'Zeynep%' THEN 'Zeynep'
 	WHEN TRIM(hr) = 'PiA' THEN 'n/a'
+	WHEN TRIM(hr) = 'ege' THEN 'Ege'
+	WHEN TRIM(hr) = 'ECE' THEN 'Ece'
 	ELSE TRIM(hr) 
   END AS recruiter   
   ,CASE
@@ -1811,10 +1825,6 @@ SELECT
 	WHEN musteri LIKE 'Optiim%' THEN 'Optiim'
 	ELSE musteri
   END AS customer       
- ,CASE 
-	WHEN lokasyon IS NULL OR lokasyon = ' ' OR lokasyon = 'e-ticaret'THEN 'n/a'
-	ELSE lokasyon
- END AS [location]
 ,CASE 
 	WHEN tool  LIKE '%React%' THEN 'React Developer'
 	ELSE 'Frontend Developer'
@@ -1830,7 +1840,6 @@ SELECT
 		WHEN musteri LIKE 'Mobiliz%' THEN 'Mobiliz'
 		ELSE musteri
 	END AS customer 
-	,'n/a' AS [location]
 	,'Go Developer' AS title
 FROM [TechnoHR].[ods].[et_go]
 UNION ALL
@@ -1847,7 +1856,6 @@ END AS recruiter
 	WHEN musteri LIKE '%Asis' THEN 'Asis Otomasyon'
 	ELSE musteri
 END AS customer 
-    ,COALESCE(lokasyon,'n/a') AS [location]
 ,'Embedded Software Engineer' AS title
 FROM [TechnoHR].[ods].[et_gomulu_embedded]
 UNION ALL
@@ -1858,13 +1866,7 @@ SELECT
 	,CASE
 			WHEN musteri LIKE '%TAV%' THEN 'TAV Technologies'
 			ELSE musteri
-		END AS customer
-	,CASE
-			WHEN lokasyon LIKE '%[Iİ]stanbul%' THEN 'İstanbul'
-			WHEN lokasyon = 'ANKARA' THEN 'Ankara'
-			WHEN lokasyon IS NULL THEN 'n/a'
-			ELSE lokasyon
-		END AS [location]	
+		END AS customer	
 		,'IT Help Desk Manager' AS title
 FROM [TechnoHR].[ods].[et_help_desk]
 UNION ALL
@@ -1877,7 +1879,6 @@ SELECT
 		ELSE hr
 	END AS recruiter  	
 	,COALESCE([musteri],'n/a') AS customer
-	,'n/a' AS [location]
 	,'IaaS Admin' AS title
 FROM [TechnoHR].[ods].[et_iaas]
 UNION ALL
@@ -1886,7 +1887,6 @@ SELECT
 	,UPPER(TRIM(ad_soyad)) AS candidate_full_name	
     ,[hr] AS recruiter
     ,[musteri] AS customer
-    ,COALESCE(lokasyon,'n/a') AS [location]
     ,'IBM BPM Specialist' AS title
 FROM [TechnoHR].[ods].[et_ibm_bpm]
 UNION ALL
@@ -1895,6 +1895,7 @@ SELECT
 	,ISNULL(UPPER(ad_soyad),'n/a') AS candidate_full_name	
 	,CASE
 		WHEN hr = 'Gizem' THEN 'Gizem Afacan'
+		WHEN hr = 'DENİZ' THEN 'Deniz'
 		WHEN hr IS NULL THEN 'n/a'
 		ELSE hr
 	END AS recruiter 	
@@ -1906,13 +1907,12 @@ SELECT
 		WHEN musteri LIKE 'Gantek%' THEN 'Gantek'
 		WHEN musteri LIKE '[İI]ntellica%' THEN 'Intellica'
 		WHEN musteri LIKE 'MDS%' THEN 'MDS ap Tech'
-		WHEN musteri LIKE 'Pi[aA]%' THEN 'PiA'
+		WHEN musteri LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 		WHEN musteri LIKE 'Vava%' THEN 'VavaCars'
 		WHEN musteri LIKE 'Vekt[oö]r%' THEN 'Vektor Mobility'
 		ELSE musteri
 	END AS customer  
-    ,COALESCE(lokasyon,'n/a') AS [location]
-,CASE 
+	,CASE 
     WHEN EXISTS (
         SELECT 1 
         FROM stg.at_aday_rapor AS r
@@ -1934,20 +1934,25 @@ SELECT
 		ELSE UPPER(TRIM(ad_soyad))
 	END AS candidate_full_name
  	,CASE
+		WHEN hr LIKE 'bensu%' THEN 'Bensu Simge'
 		WHEN hr = 'AKIN' THEN 'Akın'
 		WHEN hr = 'buğra' THEN 'Buğra'
 		WHEN hr LIKE 'Buse%' THEN 'Buse'
 		WHEN hr = 'Deniz K.' THEN 'Deniz Karsel'
 		WHEN hr = 'ECE' THEN 'Ece'
 		WHEN hr = 'Elif' THEN 'Elif Day'
+		WHEN hr = 'Eilf Mine' THEN 'Elif Mine'
 		WHEN hr = 'Gizem' THEN 'Gizem Afacan'
 		WHEN hr LIKE 'Onur%' THEN 'Onur'
 		WHEN hr = 'Sbel' THEN 'Sibel'
+		WHEN hr = 'EMRE' THEN 'Emre'
 		WHEN hr LIKE 'Sena%' THEN 'Sena'
 		WHEN hr = 'Tanay' THEN 'Özge Tanay'
 		WHEN hr = 'TUNA' THEN 'Tunahan'
 		WHEN hr = 'Yasemin H.' THEN 'Yasemin Hepyaşar'
 		WHEN hr LIKE 'Zeynep%' THEN 'Zeynep'
+		WHEN hr = 'özge' OR hr = 'öZGE' THEN 'Özge'
+		WHEN hr = 'Sİbel' OR hr = 'sibel' THEN 'Sibel'
 		ELSE hr
 	END AS recruiter 		
 	,CASE
@@ -1970,13 +1975,12 @@ SELECT
 		WHEN musteri LIKE 'Optiim%' THEN 'Optiim'
 		WHEN musteri LIKE 'Paycore%' THEN 'PayCore'
 		WHEN musteri LIKE 'P[iıİI][aA]%' THEN 'PiA'
-		WHEN musteri LIKE 'Sanko%' THEN 'SANKO'
-		WHEN musteri LIKE 'Tatil%' THEN 'TatilBudur'
+		WHEN musteri LIKE 'Sanko%' THEN 'SANKO Holding'
+		WHEN musteri LIKE 'Tati%' THEN 'TatilBudur'
 		WHEN musteri LIKE 'THY%' THEN 'ID3'
 		WHEN musteri LIKE 'Vava%' THEN 'VavaCars'
 		ELSE musteri
 	END AS customer 
-    ,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE 
     WHEN EXISTS (
         SELECT 1 
@@ -2015,44 +2019,44 @@ SELECT
 		WHEN musteri LIKE 'Unite%' THEN 'UniteBT'
 		ELSE musteri
 	END AS customer  	
-	 ,CASE
-		 WHEN lokasyon = ' ' OR lokasyon IS NULL THEN 'n/a'
-		 WHEN lokasyon LIKE '[İI]stanbul' THEN 'İstanbul'
-		 ELSE lokasyon
-	  END AS [location]	
-	  , CASE 
-    WHEN EXISTS (
-        SELECT 1 
-        FROM stg.at_aday_rapor AS r
-        WHERE r.candidate_full_name = t.ad_soyad
-    )
-    THEN (
-        SELECT TOP 1 r.title
-        FROM stg.at_aday_rapor AS r
-        WHERE r.candidate_full_name = t.ad_soyad
-    )
-    ELSE 'IT Application Administrator'
+	,CASE 
+		WHEN EXISTS (
+			SELECT 1 
+			FROM stg.at_aday_rapor AS r
+			WHERE r.candidate_full_name = t.ad_soyad
+		)
+		THEN (
+			SELECT TOP 1 r.title
+			FROM stg.at_aday_rapor AS r
+			WHERE r.candidate_full_name = t.ad_soyad
+		)
+		ELSE 'IT Application Administrator'
 	END AS title
 FROM [TechnoHR].[ods].[et_it_applicationsystem_admin]t
 UNION ALL
 SELECT 
      TRY_CONVERT(DATE,[tarih],103) AS application_date            
-	,UPPER(aday_adi_soyadi) AS candidate_full_name
-    ,COALESCE(hr,'n/a') AS recruiter
-    ,COALESCE(musteri,'n/a') AS customer
-    ,COALESCE(lokasyon,'n/a') AS [location]
-    ,'IT Assistant Manager' AS title
+	,COALESCE(UPPER(aday_adi_soyadi),'n/a') AS candidate_full_name
+    ,CASE 
+		WHEN hr IS NULL THEN 'n/a'
+		WHEN hr = 'özge' OR hr = 'öZGE' THEN 'Özge'
+		ELSE hr 
+	END AS recruiter
+    ,COALESCE(musteri,'n/a') AS customer   
+	,'IT Assistant Manager' AS title
 FROM [TechnoHR].[ods].[et_it_manager]
 UNION ALL
 SELECT 
      TRY_CONVERT(DATE,tarih,103) AS application_date            
 	,UPPER(aday) AS candidate_full_name      
-    ,hr AS recruiter
+    ,CASE
+		WHEN hr = 'özge' THEN 'Özge'
+		ELSE hr
+	END AS recruiter
     ,CASE
 		WHEN musteri LIKE '%AVD%' THEN 'AVD Teknoloji'
 		ELSE musteri
 	END AS customer
-    ,lokasyon AS [location]
     ,'IVR Analyst' AS title
 FROM [TechnoHR].[ods].[et_ivr_analyst]
 UNION ALL
@@ -2078,16 +2082,19 @@ SELECT
 		WHEN TRIM(hr) = 'HATİCE Ş.' THEN 'Hatice'
 		WHEN TRIM(hr) LIKE 'Hilal%' THEN 'Hilal'
 		WHEN TRIM(hr) = 'KAAN' THEN 'Kaan'
+		WHEN TRIM(hr) = 'özlem' THEN 'Özlem'
 		WHEN TRIM(hr) LIKE 'Meral%' OR TRIM(hr) LIKE 'MK%' THEN 'Meral'
 		WHEN TRIM(hr) LIKE 'Nisan%' THEN 'Nisan'
 		WHEN TRIM(hr) LIKE 'Onur%' THEN 'Onur'
 		WHEN TRIM(hr) LIKE 'Özge%' OR TRIM(hr) = 'Özgre' THEN 'Özge'
 		WHEN TRIM(hr) LIKE 'Sibel%' OR TRIM(hr) = 'Sbel' THEN 'Sibel'
+		WHEN TRIM(hr) LIKE 'H[aA]nife%' THEN 'Hanife'
 		WHEN TRIM(hr) LIKE 'Selin%' THEN 'Selin'
 		WHEN TRIM(hr) LIKE 'Sema%' THEN 'Semanur'
 		WHEN TRIM(hr) LIKE 'Tanay%' THEN 'Özge Tanay'
-		WHEN TRIM(hr) LIKE 'Tuğba%' THEN 'Tuğba Nur'
-		WHEN TRIM(hr) = 'TUNA' THEN 'Tunahan'
+		WHEN TRIM(hr) LIKE 'Tuğba%' THEN 'Tuğba'
+		WHEN TRIM(hr) = 'TUNA' THEN 'Tunahan'		
+		WHEN TRIM(hr) = 'yasemin' THEN 'Yasemin'
 		WHEN TRIM(hr) LIKE 'Yasemin H%' OR TRIM(hr) = 'YaseminH.' OR TRIM(hr) = 'Yassemin H.'  THEN 'Yasemin Hepyaşar'
 		ELSE TRIM(hr)
 	END recruiter
@@ -2119,8 +2126,8 @@ SELECT
 		WHEN TRIM(musteri) LIKE 'Neta%' THEN 'NETAŞ'
 		WHEN TRIM(musteri) LIKE 'Opti%' THEN 'Optiim'
 		WHEN TRIM(musteri) LIKE 'Paycore%' THEN 'PayCore'
-		WHEN TRIM(musteri) LIKE 'Perasoft%' THEN 'Pera Soft'
-		WHEN TRIM(musteri) LIKE 'P[iıİI]a%' THEN 'PiA'
+		WHEN TRIM(musteri) LIKE 'Pera%' THEN 'Perasoft'
+		WHEN TRIM(musteri) LIKE 'P[iıİI][aA]%' THEN 'PiA'
 		WHEN TRIM(musteri) LIKE 'P[rt]oto%' THEN 'Proto Yazılım'
 		WHEN TRIM(musteri) LIKE 'Sistek%' THEN 'Sistek'
 		WHEN TRIM(musteri) LIKE 'TAV%' THEN 'TAV Technologies'
@@ -2130,25 +2137,17 @@ SELECT
 		WHEN TRIM(musteri) LIKE 'quickstarter%' THEN 'Quickstarter'
 		ELSE TRIM(musteri)
 	END AS customer
-      ,CASE
-	WHEN lokasyon IS NULL OR  lokasyon = ' ' OR lokasyon = '6'
-	  OR lokasyon = 'bugfix' OR  lokasyon = 'Evam' OR lokasyon = 'f'
-	  OR lokasyon = 'IOT' OR  lokasyon = 'KARA LİSTE' OR lokasyon = 'Ment Bilişim'
-	  OR lokasyon = 'Microservices' OR  lokasyon = 'Netaş' OR lokasyon = 'PİA' OR lokasyon = 'Global'  THEN 'n/a'
-	ELSE lokasyon
- END AS [location]
  ,'Java Developer' AS title
 FROM [TechnoHR].[ods].[et_java]
 UNION ALL
 SELECT 
 	 TRY_CONVERT(DATE,[tarih],103) AS application_date            
-	,UPPER(ad_soyad) AS candidate_full_name    
+	,COALESCE(UPPER(ad_soyad),'n/a') AS candidate_full_name    
     ,CASE
          WHEN hr IS NULL THEN 'n/a'
          ELSE hr
      END AS recruiter    
     ,[musteri] AS customer
-    ,'n/a' AS [location]
     ,'Automatic Door Expert' AS title
 FROM [TechnoHR].[ods].[et_kapi]
 UNION ALL
@@ -2165,6 +2164,7 @@ SELECT
 		WHEN hr = 'HATİCE Ş.' THEN 'Hatice'
 		WHEN hr LIKE 'Meral%' THEN 'Meral'
 		WHEN hr = 'Sbel' OR hr LIKE 'Sibel%'THEN 'Sibel'
+		WHEN hr = 'öZGE' THEN 'Özge'
 		WHEN hr = 'TUNA' THEN 'Tunahan'
 		WHEN hr = 'Yasemin H.' THEN 'Yasemin Hepyaşar'
 		ELSE hr
@@ -2183,11 +2183,7 @@ SELECT
 		WHEN musteri = 'Unite BT' THEN 'UniteBT'
 		ELSE musteri
 	END AS customer
-    ,CASE 
-		WHEN lokasyon IS NULL OR lokasyon LIKE '%[0-9]%' THEN 'n/a'
-		ELSE lokasyon
-	END [location]
-      ,CASE 
+   ,CASE 
     WHEN EXISTS (
         SELECT 1 
         FROM stg.at_aday_rapor AS r
@@ -2206,9 +2202,12 @@ UNION ALL
 SELECT 
 	 TRY_CONVERT(DATE,[tarih],103) AS application_date            
 	,UPPER(ad_soyad) AS candidate_full_name       
-    ,[hr] AS recruiter
+    ,CASE
+		WHEN hr = 'özge' THEN 'Özge'
+		WHEN hr = 'Sİbel' THEN 'Sibel'
+		ELSE hr
+	END AS recruiter
     ,[musteri] AS customer
-    ,'n/a' AS [location]
     ,'Account Manager' AS title
 FROM [TechnoHR].[ods].[et_m_yoneticisi_tasindi]
 UNION ALL
@@ -2221,6 +2220,7 @@ SELECT
 		WHEN hr = 'Elif' THEN 'Elif Day'
 		WHEN hr = 'ege' THEN 'Ege'
 		WHEN hr = 'Şeyma' THEN 'Şeyma'
+		WHEN hr = 'özge' THEN 'Özge'
 		WHEN hr = 'Yasemin H.' THEN 'Yasemin Hepyaşar'
 		ELSE hr
 	 END AS recruiter
@@ -2231,7 +2231,6 @@ SELECT
 		WHEN musteri LIKE 'Gantek%' THEN 'Gantek'
 		ELSE musteri
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
     ,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2261,11 +2260,15 @@ SELECT
 		WHEN hr = 'Gizem' THEN 'Gizem Afacan'
 		WHEN hr LIKE 'Hila%' THEN 'Hilal'
 		WHEN hr LIKE 'Meral%' THEN 'Meral'
-		WHEN hr = 'Sbel' THEN 'Sibel'
+		WHEN hr = 'Sbel' OR hr = 'Sİbel' THEN 'Sibel'
+		WHEN hr = 'selin' THEN 'Selin'
 		WHEN hr LIKE 'Şevval%' OR hr LIKE 'Ş.Nur%' THEN 'Şevval Nur'
 		WHEN hr LIKE 'Tuna%' THEN 'Tunahan'
 		WHEN hr LIKE 'Yasemin H%' THEN 'Yasemin Hepyaşar'
+		WHEN hr = 'yasemin' THEN 'Yasemin'
+		WHEN hr LIKE 'Tuğba%' THEN 'Tuğba'
 		WHEN hr LIKE 'Zeynep%' THEN 'Zeynep'
+		WHEN hr = 'özge' THEN 'Özge'
 		ELSE hr
 	END AS recruiter
 ,CASE 
@@ -2286,17 +2289,13 @@ SELECT
 	WHEN [musteri_teknoloji] LIKE 'Mobiversite%' THEN 'Mobiversite'
 	WHEN [musteri_teknoloji] LIKE 'Odeon%' OR [musteri_teknoloji] LIKE 'Oeon%' THEN 'Odeon'
 	WHEN [musteri_teknoloji] LIKE 'Optiim%' THEN 'Optiim'
-	WHEN [musteri_teknoloji] LIKE 'Pia%' THEN 'PiA'
+	WHEN [musteri_teknoloji] LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 	WHEN [musteri_teknoloji] LIKE 'Tatil%' THEN 'TatilBudur'
 	WHEN [musteri_teknoloji] LIKE 'TAV%' THEN 'TAV Technologies'
 	WHEN [musteri_teknoloji] LIKE 'THY%' THEN 'THY'
 	WHEN [musteri_teknoloji] LIKE 'Vektor%' THEN 'Vektor Mobility'
 	ELSE [musteri_teknoloji]
  END AS customer	
-,CASE
-	WHEN lokasyon IS NULL OR lokasyon = ' ' THEN 'n/a'
-	ELSE lokasyon
-END AS [location]
 ,CASE
 	WHEN [alan] LIKE 'Mobile%' THEN 'Mobile Developer'
 	WHEN [alan] LIKE '[ıiIİ][oO][sS]%' THEN 'iOS Developer'
@@ -2313,6 +2312,7 @@ SELECT
 		WHEN hr = 'Gizem' THEN 'Gizem Afacan'
 		WHEN hr = 'Özge Ş' THEN 'Özge'
 		WHEN hr = 'Özge T.' OR hr = 'Tanay' THEN 'Özge Tanay'
+		WHEN hr = 'Sİbel' THEN 'Sibel'
 		ELSE hr
 	END AS recruiter
 	,CASE 
@@ -2322,7 +2322,6 @@ SELECT
 		WHEN musteri LIKE 'Gante%' THEN 'Gantek'
 		ELSE musteri
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2348,6 +2347,8 @@ SELECT
      END AS candidate_full_name
     ,CASE
 		WHEN TRIM(hr) IS NULL OR TRIM(hr) = '?' THEN 'n/a'
+		WHEN TRIM(hr)  = 'EMRE' THEN 'Emre'
+		WHEN TRIM(hr)  = 'ECE' THEN 'Ece'
 		WHEN TRIM(hr)  = 'AKIN' THEN 'Akın'
 		WHEN TRIM(hr)  LIKE 'Beyza%' THEN 'Beyza'
 		WHEN TRIM(hr)  = 'buğra' THEN 'Buğra'
@@ -2360,9 +2361,10 @@ SELECT
 		WHEN TRIM(hr)  = 'HATİCE Ş.' THEN 'Hatice'
 		WHEN TRIM(hr)  LIKE 'Onur%' THEN 'Onur'
 		WHEN TRIM(hr)  LIKE 'Özge%' OR TRIM(hr) = 'Özxge' THEN 'Özge'
-		WHEN TRIM(hr)  = 'Sbel' THEN 'Sibel'
+		WHEN TRIM(hr)  = 'sibel' OR TRIM(hr)  = 'Sbel' THEN 'Sibel'
 		WHEN TRIM(hr)  LIKE 'Sema%' THEN 'Semanur'
 		WHEN TRIM(hr)  = 'TUNA' THEN 'Tunahan'
+		WHEN TRIM(hr)  = 'yasemin' THEN 'Yasemin'
 		WHEN TRIM(hr)  LIKE 'Yasemin H%' THEN 'Yasemin Hepyaşar'
 		ELSE TRIM(hr)
 	 END AS recruiter
@@ -2399,7 +2401,6 @@ SELECT
 		WHEN musteri LIKE 'Vava%' THEN 'VavaCars'
 		ELSE musteri
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
     ,'.NET Developer' AS title
 FROM [TechnoHR].[ods].[et_net]
 UNION ALL
@@ -2410,17 +2411,15 @@ SELECT
 		WHEN hr = 'Gizem' THEN 'Gizem Afacan'
 		WHEN hr = 'Elif' THEN 'Elif Day'
 		WHEN hr = 'TUNA' THEN 'Tunahan'
+		WHEN hr = 'özge' THEN 'Özge'
+
 		ELSE hr
 	END AS recruiter
 	,CASE 
 		WHEN musteri IS NULL OR musteri = 'Genel 'THEN 'n/a'
 		ELSE musteri
 	END customer
-	,CASE
-		WHEN lokasyon IS NULL OR lokasyon NOT LIKE '%[a-zA-Z]%' THEN 'n/a'
-		ELSE lokasyon
-	END AS [location]
-	,	CASE 
+	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
 			FROM stg.at_aday_rapor AS r
@@ -2444,7 +2443,8 @@ SELECT
     ,CASE
 		WHEN hr IS NULL THEN 'n/a'
 		WHEN hr = 'Hllal' THEN 'Hilal'
-		WHEN hr = 'Öxge'  THEN 'Özge'
+		WHEN hr = 'Öxge' OR hr = 'özge' OR hr = 'öZGE' THEN 'Özge'
+		WHEN hr = 'Sİbel' THEN 'Sibel'
 		ELSE hr
 	END AS recruiter
     ,CASE 
@@ -2452,7 +2452,6 @@ SELECT
 		WHEN musteri LIKE 'Data%' THEN 'DataBoss'
 		ELSE musteri
 	END customer
-    ,'n/a' AS [location]
 	,'Executive Assistant' AS title
 FROM [TechnoHR].[ods].[et_ofis_yo_asist]
 UNION ALL
@@ -2464,7 +2463,6 @@ SELECT
 		WHEN musteri LIKE 'Optiim%' THEN 'Optiim'
 		ELSE musteri
 	END customer
-    ,COALESCE(lokasyon,'n/a') AS [location]
 	,'Object Storage Service Integration Expert' AS title
 FROM [TechnoHR].[ods].[et_oss]
 UNION ALL
@@ -2476,7 +2474,6 @@ SELECT
 		WHEN musteri LIKE 'Optiim%' THEN 'Optiim'
 		ELSE musteri
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
 	,'PEGA Consultant' AS title
 FROM [TechnoHR].[ods].[et_pega]
 UNION ALL
@@ -2500,11 +2497,6 @@ SELECT
 		WHEN musteri LIKE 'Tatil%' THEN 'TatilBudur'
 		ELSE musteri
 	END customer
-	,CASE 
-		WHEN lokasyon IS NULL THEN 'n/a'
-		WHEN lokasyon LIKE 'İst%' THEN 'İstanbul'
-		ELSE lokasyon
-    END AS [location]
 	,'PHP Developer' AS title
 FROM [TechnoHR].[ods].[et_php]
 UNION ALL
@@ -2521,8 +2513,9 @@ SELECT
 		WHEN hr LIKE 'Buse%' THEN 'Buse'
 		WHEN hr = 'Elif' THEN 'Elif Day'
 		WHEN hr = 'Gizem'  THEN 'Gizem Afacan'
-		WHEN hr = 'Sibell'  THEN 'Sibel'
+		WHEN hr = 'Sibell'  OR hr = 'sİBEL' THEN 'Sibel'
 		WHEN hr = 'Tuna'  THEN 'Tunahan'
+		WHEN hr = 'özge'  THEN 'Özge'
 		ELSE hr
 	END AS recruiter
 	,CASE 
@@ -2542,7 +2535,7 @@ SELECT
 		WHEN musteri LIKE 'N[İI]SO%' THEN 'NISO'
 		WHEN musteri LIKE 'Odeon%' THEN 'Odeon'
 		WHEN musteri LIKE 'Optiim%' THEN 'Optiim'
-		WHEN musteri LIKE 'P[iİ]A%' THEN 'PiA'
+		WHEN musteri LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 		WHEN musteri LIKE '%Vavacars%' THEN 'VavaCars'
 		WHEN musteri LIKE 'Sanko%' THEN 'SANKO Holding'
 		WHEN musteri LIKE 'Tatil%' THEN 'TatilBudur'
@@ -2550,7 +2543,6 @@ SELECT
 		WHEN musteri LIKE 'Yıldız%' THEN 'Yıldız Tech'
 		ELSE musteri
 	END customer
-	,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2581,12 +2573,11 @@ SELECT
 		WHEN musteri IS NULL OR musteri = 'Genel' THEN 'n/a'
 		WHEN musteri LIKE '[İI]ntellica%' THEN 'Intellica'
 		WHEN musteri LIKE 'Mobillium%' THEN 'Mobillium'
-		WHEN musteri LIKE 'P[iıIİ]A%' THEN 'PiA'
+		WHEN musteri LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 		WHEN musteri LIKE 'Tatil%' THEN 'TatilBudur'
 		WHEN musteri LIKE 'Vektor%' THEN 'Vektor Mobility'
 		ELSE musteri
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2615,7 +2606,6 @@ SELECT
 		WHEN musteri LIKE 'Data%' THEN 'DataBoss'
 		ELSE musteri
 	END customer
-    ,'n/a' AS [location]
     ,'Python Developer' AS title
 FROM [TechnoHR].[ods].[et_python]
 UNION ALL
@@ -2629,12 +2619,6 @@ SELECT
 		ELSE hr
 	END AS recruiter
     ,'Kibele' AS customer
-    ,CASE
-		WHEN lokasyon IS NULL
-			OR lokasyon = '-' 
-			OR lokasyon = '?' THEN 'n/a'
-		ELSE lokasyon
-	END AS [location]
     ,'Robotic and Automation Engineer' AS title
 FROM [TechnoHR].[ods].[et_robotik_otomasyon]
 UNION ALL
@@ -2652,7 +2636,6 @@ SELECT
 		WHEN musteri_pozisyon LIKE 'Unite%' THEN 'UniteBT'
 		ELSE musteri_pozisyon
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2673,7 +2656,6 @@ SELECT
     ,UPPER(ad_soyad) AS candidate_full_name
     ,[hr] AS recruiter
     ,'EYE Teknoloji' AS customer
-    ,'n/a' AS [location]
     ,'RPA Developer' AS title
 FROM [TechnoHR].[ods].[et_rpg]
 UNION ALL
@@ -2688,6 +2670,8 @@ SELECT
 		WHEN hr LIKE 'Hilal%' THEN 'Hilal'
 		WHEN hr LIKE 'Neval%' THEN 'Neval'
 		WHEN hr LIKE 'Sibel%' THEN 'Sibel'
+		WHEN hr = 'özge'  THEN 'Özge'
+		WHEN hr = 'Sema'  THEN 'Semanur'
 		WHEN hr LIKE 'Tuna%'  THEN 'Tunahan'
 		ELSE hr
 	END AS recruiter
@@ -2696,13 +2680,6 @@ SELECT
 		WHEN musteri LIKE 'Gantek%' THEN 'Gantek'
 		ELSE musteri
 	END customer
-	,CASE 
-		WHEN lokasyon IS NULL OR lokasyon LIKE 'bura%' THEN 'n/a'
-		WHEN lokasyon LIKE 'İst%' THEN 'İstanbul'
-		WHEN lokasyon LIKE 'izmir%' THEN 'İzmir'
-		WHEN lokasyon LIKE 'izmit%' THEN 'İzmit'
-		ELSE lokasyon
-    END AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2736,6 +2713,8 @@ SELECT
 		WHEN hr LIKE 'Sedef%' THEN 'Sedef'
 		WHEN hr LIKE 'Tuna%'  THEN 'Tunahan'
 		WHEN hr LIKE 'Yasemin H%'  THEN 'Yasemin Hepyaşar'
+		WHEN hr LIKE 'özge%' THEN 'Özge'
+		WHEN hr = 'sİBEL' OR hr = 'sibel' OR hr = 'Sİbel' THEN 'Sibel'
 		ELSE hr
 	END AS recruiter
 	,CASE 
@@ -2749,10 +2728,6 @@ SELECT
 		WHEN musteri_pozisyon LIKE 'SPRO%' THEN 'SPRO'
 		ELSE 'n/a'
 	END customer
-	,CASE 
-		WHEN lokasyon IS NULL OR lokasyon LIKE '%[0-9]%' OR lokasyon = ' ' THEN 'n/a'
-		ELSE lokasyon
-    END AS [location]
 	,CASE
 		WHEN sap_tool IS NULL 
 		THEN 
@@ -2794,8 +2769,10 @@ SELECT
 		WHEN hr = 'Elif' THEN 'Elif Day'
 		WHEN hr LIKE 'Gizem%' THEN 'Gizem Afacan'
 		WHEN hr LIKE 'Neval%' THEN 'Neval'
-		WHEN hr = 'Sbel' THEN 'Sibel'
+		WHEN hr = 'Sbel' OR hr = 'Sİbel' THEN 'Sibel'
 		WHEN hr = 'Tuna' THEN 'Tunahan'
+		WHEN hr = 'özge' OR hr = 'öZGE' THEN 'Özge'
+
 		WHEN hr LIKE 'ulaşılmasın%' THEN 'n/a'
 		ELSE hr
 	END AS recruiter
@@ -2813,10 +2790,6 @@ SELECT
 		WHEN musteri LIKE 'Vektor%' THEN 'Vektor Mobility'
 		ELSE 'n/a'
 	END customer
-	,CASE
-		WHEN lokasyon IS NULL OR lokasyon NOT LIKE '%[a-zA-Z]%' THEN 'n/a'
-		ELSE lokasyon
-	END AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2850,7 +2823,6 @@ SELECT
 		WHEN musteri_pozisyon LIKE 'EYE%' THEN 'EYE Teknoloji'
 		ELSE 'n/a'
 	END customer
-    ,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2875,7 +2847,6 @@ SELECT
 		ELSE hr
 	END AS recruiter
     ,[musteri] AS customer
-    ,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2896,10 +2867,6 @@ SELECT
     ,UPPER(ad_soyad) AS candidate_full_name    
     ,[hr] AS recruiter
     ,'n/a' AS customer
-	,CASE
-		WHEN lokasyon IS NULL OR lokasyon LIKE 'daha%' THEN 'n/a'
-		ELSE lokasyon
-	END AS [location]
     ,'Cyber Security Specialist' AS title
 FROM [TechnoHR].[ods].[et_siber_guvenlik]
 UNION ALL
@@ -2914,7 +2881,9 @@ SELECT
 		WHEN hr LIKE 'Hanife%' THEN 'Hanife'
 		WHEN hr LIKE 'Özge%' THEN 'Özge'
 		WHEN hr LIKE 'Sedef%' THEN 'Sedef'
-		WHEN hr = 'Siibel' THEN 'Sibel'
+		WHEN hr = 'Siibel' OR  hr = 'sİBEL' THEN 'Sibel'
+		WHEN hr = 'Sema' THEN 'Semanur'
+
 		ELSE hr
 	END AS recruiter
     ,CASE 
@@ -2929,7 +2898,6 @@ SELECT
 		WHEN musteri LIKE 'Unite%' THEN 'UniteBT'
 		ELSE musteri
 	END customer    
-    ,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2950,6 +2918,7 @@ SELECT
     ,UPPER(TRIM([ad_soyad])) AS candidate_full_name
 	,CASE
 		WHEN hr = 'DENİZ' THEN 'Deniz'
+		WHEN hr = 'SİBEL' THEN 'Sibel'
 		WHEN hr LIKE 'EMRE%' THEN 'Emre'
 		WHEN hr = 'Gizem' THEN 'Gizem Afacan'
 		WHEN hr LIKE 'Gizem D%' THEN 'Gizem Dilara'
@@ -2959,9 +2928,9 @@ SELECT
 		WHEN musteri = 'başvuru' OR musteri = 'Genel' THEN 'n/a'
 		WHEN musteri LIKE 'Gantek%' THEN 'Gantek'
 		WHEN musteri = 'SİSTEK' THEN 'Sistek'
+		WHEN musteri LIKE 'P[iıIİ][aA]%' THEN 'PiA'
 		ELSE musteri
 	END customer 
-    ,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -2989,7 +2958,6 @@ SELECT
 		WHEN musteri = 'Logo' THEN 'Logo Yazılım'
 		ELSE 'n/a'
 	END customer 
-    ,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -3013,7 +2981,6 @@ SELECT
 		ELSE hr
 	END AS recruiter
     ,[musteri] AS customer
-    ,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -3033,6 +3000,7 @@ SELECT
     TRY_CONVERT(DATE,[tarih],103) AS application_date
     ,UPPER(TRIM([ad_soyad])) AS candidate_full_name    
 	,CASE
+		WHEN hr = 'buğra' THEN 'Buğra'
 		WHEN hr LIKE 'Beyza%' THEN 'Beyza'
 		WHEN hr LIKE 'Buse%' THEN 'Buse'
 		WHEN hr LIKE 'Ebru%' THEN 'Ebru'
@@ -3043,7 +3011,8 @@ SELECT
 		WHEN hr LIKE 'Hilal%' THEN 'Hilal'
 		WHEN hr LIKE 'Onur%' THEN 'Onur'
 		WHEN hr LIKE 'Özge%' THEN 'Özge'
-		WHEN hr = 'Sbel' THEN 'Sibel'
+		WHEN hr = 'Sbel' OR hr = 'Sİbel' THEN 'Sibel'
+		WHEN hr = 'meral' THEN 'Meral'
 		WHEN hr = 'Sema' THEN 'Semanur'
 		WHEN hr = 'Tanay' THEN 'Özge Tanay'
 		ELSE hr
@@ -3053,7 +3022,6 @@ SELECT
 		WHEN musteri LIKE 'Gan%' THEN 'Gantek'
 		ELSE musteri
 	END customer
-	,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -3094,7 +3062,6 @@ SELECT
 		WHEN musteri LIKE 'Tetra%' THEN 'Tetra Bilişim'
 		ELSE musteri
 	END customer
-    ,'n/a' AS [location]
     ,'Application Support Engineer' AS title
 FROM [TechnoHR].[ods].[et_support]
 UNION ALL
@@ -3103,10 +3070,12 @@ SELECT
     ,UPPER(aday_adi_soyadi) AS candidate_full_name
 	,CASE
 		WHEN hr LIKE 'Meral%' THEN 'Meral'
+		WHEN hr LIKE 'EMRE%' THEN 'Emre'
+		WHEN hr = 'özge' THEN 'Özge'
+
 		ELSE hr
 	END AS recruiter
     ,'EYE Teknoloji' AS customer
-    ,'n/a' AS [location]
 	,CASE 
 		WHEN EXISTS (
 			SELECT 1 
@@ -3134,9 +3103,10 @@ SELECT
 		WHEN hr = 'HATİCE Ş.' THEN 'Hatice'
 		WHEN hr LIKE 'Meral%' THEN 'Meral'
 		WHEN hr LIKE 'Onur%' THEN 'Onur'
-		WHEN hr = 'Öxge' OR hr LIKE 'Özge%' THEN 'Özge'
+		WHEN hr = 'Öxge' OR hr LIKE '[öÖ]zge%' THEN 'Özge'
 		WHEN hr = 'Sbel' THEN 'Sibel'
 		WHEN hr LIKE 'Sedef%' THEN 'Sedef'
+		WHEN hr = 'EMRE' THEN 'Emre'
 		ELSE hr
 	END AS recruiter
 	,CASE 
@@ -3154,11 +3124,6 @@ SELECT
 		WHEN musteri LIKE 'Tatil%' THEN 'TatilBudur'
 		ELSE musteri
 	END customer
-	,CASE
-		WHEN lokasyon IS NULL OR lokasyon = 'başvuru' THEN 'n/a'
-		WHEN lokasyon LIKE '%ist%' THEN 'İstanbul'
-		ELSE lokasyon
-	END AS [location]
     ,'Test/QA Specialist' AS title
 FROM [TechnoHR].[ods].[et_test_qa]
 UNION ALL
@@ -3176,7 +3141,6 @@ SELECT
 		WHEN musteri LIKE 'Eye%' THEN 'EYE Teknoloji'
 		ELSE musteri
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
 	,CASE
 		WHEN pozisyon LIKE '%Siebel%' THEN 'Siebel Developer'
 		WHEN pozisyon LIKE '%Tibco%' THEN 'Tibco Developer'
@@ -3191,7 +3155,6 @@ SELECT
 	,CASE 
 		WHEN musteri LIKE 'Tetra%' THEN 'Tetra Bilişim'
 	END customer
-	,COALESCE(lokasyon,'n/a') AS [location]
     ,'System Admin/Engineer' AS title
 FROM [TechnoHR].[ods].[et_uretim_sist_yon]
 UNION ALL
@@ -3207,10 +3170,8 @@ SELECT
 	,CASE 
 		WHEN musteri LIKE 'tatil%' THEN 'TatilBudur'
 	END customer
-    ,'n/a' AS [location]
     ,'Web Analytics Specialist' AS title
 FROM [TechnoHR].[ods].[et_urun_ve_analitik]
-
 
 
 

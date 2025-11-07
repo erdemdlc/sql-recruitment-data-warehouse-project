@@ -82,8 +82,8 @@ GO
 ALTER TABLE stg.application_history ADD  DEFAULT (getdate()) FOR [dwh_create_date]
 GO
 CREATE TABLE stg.et_hr (
-	recruiter_name NVARCHAR (50)
-	,recruiter_surname NVARCHAR (50)
+	recruiter_firstname NVARCHAR (50)
+	,recruiter_lastname NVARCHAR (50)
 	,phone_number NVARCHAR (50)
 	,email NVARCHAR (50)
 	,dwh_create_date DATETIME2 (7)

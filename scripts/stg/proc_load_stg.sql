@@ -3172,7 +3172,20 @@ SELECT
 	END customer
     ,'Web Analytics Specialist' AS title
 FROM [TechnoHR].[ods].[et_urun_ve_analitik]
-
+GO
+TRUNCATE TABLE stg.et_hr
+INSERT INTO stg.et_hr (
+	recruiter_firstname
+	,recruiter_lastname
+	,phone_number
+	,email
+	)
+SELECT
+	 SUBSTRING (ad_soyad,1,CHARINDEX(' ',ad_soyad)-1) AS recruiter_firstname
+	,SUBSTRING (ad_soyad,CHARINDEX(' ',ad_soyad)+1,LEN(ad_soyad)) AS recruiter_lastname
+	,telefon AS phone_number
+	,mail AS email
+FROM [TechnoHR].[ods].[et_hr]
 
 
 

@@ -55,11 +55,20 @@ CREATE TABLE dwh.dim_recruiter (
     phone_number NVARCHAR(50) NULL
 );
 GO
-	IF OBJECT_ID('dwh.dim_recruiter', 'U') IS NOT NULL
-    DROP TABLE dwh.dim_recruiter;
+	IF OBJECT_ID('dwh.dim_source', 'U') IS NOT NULL
+    DROP TABLE dwh.dim_source;
 GO
 CREATE TABLE dwh.dim_source (
     source_key INT IDENTITY(1,1) PRIMARY KEY,
     source_name NVARCHAR(255) NOT NULL
 );
+GO
+	IF OBJECT_ID('dwh.dim_interview_method', 'U') IS NOT NULL
+    DROP TABLE dwh.dim_interview_method;	
+GO
+CREATE TABLE dwh.dim_interview_method (
+    method_key INT IDENTITY(1,1) PRIMARY KEY,
+    method_name NVARCHAR(255) NOT NULL
+);
+GO
 

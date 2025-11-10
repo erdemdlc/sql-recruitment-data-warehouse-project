@@ -25,3 +25,14 @@ CREATE TABLE dwh.dim_date (
     day_name NVARCHAR(20),
     is_weekend BIT
 );
+GO
+IF OBJECT_ID('dwh.dim_customer', 'U') IS NOT NULL
+    DROP TABLE dwh.dim_customer;
+GO	
+CREATE TABLE dwh.dim_customer (
+    customer_key INT IDENTITY(1,1) PRIMARY KEY,
+    customer_name NVARCHAR(255),
+    customer_segment NVARCHAR(100) NULL,
+    is_active BIT DEFAULT 1,
+    inserted_at DATETIME DEFAULT GETDATE()
+);

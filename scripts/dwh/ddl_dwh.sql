@@ -54,4 +54,12 @@ CREATE TABLE dwh.dim_recruiter (
     email NVARCHAR(255) UNIQUE,
     phone_number NVARCHAR(50) NULL
 );
+GO
+	IF OBJECT_ID('dwh.dim_recruiter', 'U') IS NOT NULL
+    DROP TABLE dwh.dim_recruiter;
+GO
+CREATE TABLE dwh.dim_source (
+    source_key INT IDENTITY(1,1) PRIMARY KEY,
+    source_name NVARCHAR(255) NOT NULL
+);
 

@@ -1344,14 +1344,11 @@ END AS interview_method
 END AS linkedin_url
   FROM [TechnoHR].[ods].[et_aday_raporu]
 GO
-TRUNCATE TABLE stg.application_history
-INSERT INTO stg.application_history (
-	   [application_date]
-      ,[candidate_full_name]
-      ,[recruiter]
-      ,[customer]
-      ,[title]
-	)
+
+TRUNCATE TABLE stg.application_history;
+
+;WITH AllApplications AS
+(
 SELECT 
     TRY_CONVERT(DATE,[tarih],103) AS application_date     
     ,UPPER(ad_soyad) AS candidate_full_name
@@ -3172,20 +3169,35 @@ SELECT
 	END customer
     ,'Web Analytics Specialist' AS title
 FROM [TechnoHR].[ods].[et_urun_ve_analitik]
-GO
-TRUNCATE TABLE stg.et_hr
-INSERT INTO stg.et_hr (
-	recruiter_firstname
-	,recruiter_lastname
-	,phone_number
-	,email
-	)
+)
+INSERT INTO stg.application_history (
+       [application_date]
+      ,[candidate_full_name]
+      ,[recruiter]
+      ,[customer]
+      ,[title]
+      ,[recruiter_email]
+)
 SELECT
-	 SUBSTRING (ad_soyad,1,CHARINDEX(' ',ad_soyad)-1) AS recruiter_firstname
-	,SUBSTRING (ad_soyad,CHARINDEX(' ',ad_soyad)+1,LEN(ad_soyad)) AS recruiter_lastname
-	,telefon AS phone_number
-	,mail AS email
-FROM [TechnoHR].[ods].[et_hr]
+    a.application_date
+    ,a.candidate_full_name
+    ,a.recruiter
+    ,a.customer
+    ,a.title
+    ,COALESCE(eh.email,'n/a') AS recruiter_email
+FROM AllApplications a
+LEFT JOIN stg.et_hr eh
+    ON eh.recruiter_firstname + ' ' + eh.recruiter_lastname = a.recruiter
+    OR eh.recruiter_firstname = a.recruiter
+    OR (a.recruiter = 'Elif Mine'      AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Elif Mine')
+    OR (a.recruiter = 'Deniz Karsel'  AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Deniz Karsel')
+    OR (a.recruiter = 'Elif Day'      AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Elif Day')
+    OR (a.recruiter = 'Gizem Afacan'  AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Gizem Afacan')
+    OR (a.recruiter = 'Gizem Dilara'  AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Gizem Dilara')
+    OR (a.recruiter = 'Özge Tanay'    AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Özge Tanay')
+    OR (a.recruiter = 'Şevval Nur'    AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Şevval Nur')
+    OR (a.recruiter = 'Talha Şahin'   AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Talha Şahin')
+    OR (a.recruiter = 'Yasemin Hepyaşar' AND eh.recruiter_firstname + ' ' + eh.recruiter_lastname = 'Yasemin Hepyaşar');
 
 
 

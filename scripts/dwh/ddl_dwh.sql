@@ -12,7 +12,6 @@ Script Purpose:
 IF OBJECT_ID('dwh.dim_date', 'U') IS NOT NULL
     DROP TABLE dwh.dim_date;
 GO
-
 CREATE TABLE dwh.dim_date (
     date_key INT PRIMARY KEY,       
     full_date DATE,
@@ -35,4 +34,12 @@ CREATE TABLE dwh.dim_customer (
     customer_segment NVARCHAR(100) NULL,
     is_active BIT DEFAULT 1,
     inserted_at DATETIME DEFAULT GETDATE()
+);
+GO
+IF OBJECT_ID('dwh.dim_title', 'U') IS NOT NULL
+    DROP TABLE dwh.dim_title;	
+GO
+CREATE TABLE dwh.dim_title (
+    title_key INT IDENTITY(1,1) PRIMARY KEY,
+    title_name NVARCHAR(255) NOT NULL
 );

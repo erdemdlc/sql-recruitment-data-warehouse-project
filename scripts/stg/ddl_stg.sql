@@ -76,6 +76,7 @@ CREATE TABLE stg.application_history
 ,recruiter NVARCHAR(250)
 ,customer NVARCHAR(250)
 ,title NVARCHAR(250)
+,recruiter_email NVARCHAR(250)	
 ,dwh_create_date DATETIME2(7)
 )
 GO

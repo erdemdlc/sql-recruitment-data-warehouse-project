@@ -82,4 +82,22 @@ CREATE TABLE dwh.dim_candidate (
     location NVARCHAR(255) NULL,
     english_level NVARCHAR(50) NULL
 );
-
+GO
+	IF OBJECT_ID('dwh.fact_offers', 'U') IS NOT NULL
+    DROP TABLE dwh.fact_offers;	
+GO
+CREATE TABLE dwh.fact_offers (
+    offer_key INT IDENTITY(1,1) PRIMARY KEY,
+    candidate_key INT NOT NULL,
+    customer_key INT NOT NULL,
+    title_key INT NOT NULL,
+    recruiter_key INT NOT NULL,
+    source_key INT NULL,
+    method_key INT NULL,
+    submission_date_key INT NULL,
+    offer_date_key INT NULL,
+    starting_date_key INT NULL,
+    experience FLOAT NULL,
+    net_salary FLOAT NULL,
+    inserted_at DATETIME DEFAULT GETDATE()
+);

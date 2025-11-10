@@ -71,4 +71,15 @@ CREATE TABLE dwh.dim_interview_method (
     method_name NVARCHAR(255) NOT NULL
 );
 GO
+	IF OBJECT_ID('dwh.dim_candidate', 'U') IS NOT NULL
+    DROP TABLE dwh.dim_candidate;	
+GO
+CREATE TABLE dwh.dim_candidate (
+    candidate_id INT IDENTITY(1,1) PRIMARY KEY,
+    candidate_full_name NVARCHAR(255) NOT NULL,
+    experience FLOAT NULL,
+    net_salary FLOAT NULL,
+    location NVARCHAR(255) NULL,
+    english_level NVARCHAR(50) NULL
+);
 
